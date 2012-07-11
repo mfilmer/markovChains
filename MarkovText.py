@@ -3,53 +3,53 @@ import random
 class markov(object):
     def __init__(self):
         self.__fileName = ''
-        self.__wordCount = 0
-        self.__words = []
+        self.__count = 0
+        self.__list = []
     
     def seedFile(self,fileName):
-        self.__wordCount = 0
+        self.__count = 0
         with open(fileName) as f:
-            self.__words = f.read().split()
-            self.__wordCount = len(self.__words)
-        if self.__wordCount == 0:
+            self.__list = f.read().split()
+            self.__count = len(self.__list)
+        if self.__count == 0:
             error('seed file not loaded or is empty')
     
     def seedString(self,words):
-        self.__wordCount = 0
-        self.__words = words.split()
-        self.__wordCount = len(self.__words)
+        self.__count = 0
+        self.__list = words.split()
+        self.__count = len(self.__list)
     
-    def seedList(self,items):
-        self.__wordCount = 0
-        self.__words = items
-        self.__wordCount = len(self.__words)
+    def seed(self,items):
+        self.__count = 0
+        self.__list = items
+        self.__count = len(self.__list)
     
-    def genText(self,length,seedWords=2):
-        if self.__wordCount == 0:
+    def genChain(self,length,seedLen=1):
+        if self.__count == 0:
             error('seed file not loaded or seed file is empty')
-        if self.__wordCount < seedWords:
+        if self.__count < seedLen:
             error('too few words in seed file')
-        SWI = random.randint(0,self.__wordCount - (seedWords+1))
+        seedIndex = random.randint(0,self.__count - (seedLen+1))
         
-        seed = self.__words[SWI:SWI+seedWords]
-        return self.genTextFromSeed(length,seed)
+        seed = self.__list[seedIndex:seedIndex+seedLen]
+        return self.genChainFromSeed(length,seed)
     
-    def genTextFromSeed(self,length,seed):
-        #do this so we don't modify the original seed
-        words = seed
-        for i in range(length-len(words)):
-            seed.append(self.__getNextWord(words[i:]))
-        return words
+    def genChainFromSeed(self,length,seed):
+        #do this so we don't modify the original seed in the calling function
+        items = seed
+        for i in range(length-len(items)):
+            seed.append(self.__getNext(items[i:]))
+        return items
     
-    def __getNextWord(self,words):
+    def __getNext(self,items):
         indicies = []
-        num = len(words)
-        stop = self.__wordCount
+        num = len(items)
+        stop = self.__count
         for i in range(num,stop):
-            if self.__words[i-num:i] == words:
+            if self.__list[i-num:i] == items:
                 indicies.append(i)
         count = len(indicies)
         if count == 0:
             return ''
         choice = random.randint(0,count-1)
-        return self.__words[indicies[choice]]
+        return self.__list[indicies[choice]]
