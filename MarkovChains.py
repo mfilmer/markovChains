@@ -2,14 +2,16 @@ import random
 
 class markov(object):
     def __init__(self):
-        self.__fileName = ''
         self.__count = 0
         self.__list = []
     
-    def sourceFile(self,fileName):
+    def sourceFile(self,fileName,words=True):
         self.__count = 0
         with open(fileName) as f:
-            self.source(f.read().split())
+            if words:
+                self.source(f.read().split())
+            else:
+                self.source(f.read())
         if self.__count == 0:
             error('source not loaded')
     
@@ -31,16 +33,21 @@ class markov(object):
     
     def genChainFromSeed(self,length,seed):
         #do this so we don't modify the original seed in the calling function
+        #doing this actually might not accomplish anything
+        #todo: determine if this actually does anything
         items = seed
-        for i in range(length-len(items)):
-            seed.append(self.__getNext(items[i:]))
+        for i in xrange(length-len(items)):
+            try:
+                items.append(self.__getNext(items[i:]))
+            except:
+                items += self.__getNext(items[i:])
         return items
     
     def __getNext(self,items):
         indicies = []
         num = len(items)
         stop = self.__count
-        for i in range(num,stop):
+        for i in xrange(num,stop):
             if self.__list[i-num:i] == items:
                 indicies.append(i)
         count = len(indicies)
