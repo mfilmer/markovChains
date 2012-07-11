@@ -6,29 +6,24 @@ class markov(object):
         self.__count = 0
         self.__list = []
     
-    def seedFile(self,fileName):
+    def sourceFile(self,fileName):
         self.__count = 0
         with open(fileName) as f:
-            self.__list = f.read().split()
-            self.__count = len(self.__list)
+            self.source(f.read().split())
         if self.__count == 0:
-            error('seed file not loaded or is empty')
+            error('source not loaded')
     
-    def seedString(self,words):
-        self.__count = 0
-        self.__list = words.split()
-        self.__count = len(self.__list)
-    
-    def seed(self,items):
-        self.__count = 0
+    def source(self,items):
         self.__list = items
         self.__count = len(self.__list)
+        if self.__count == 0:
+            error('source is empty')
     
     def genChain(self,length,seedLen=1):
         if self.__count == 0:
-            error('seed file not loaded or seed file is empty')
+            error('source not loaded')
         if self.__count < seedLen:
-            error('too few words in seed file')
+            error('too few items in source list')
         seedIndex = random.randint(0,self.__count - (seedLen+1))
         
         seed = self.__list[seedIndex:seedIndex+seedLen]
