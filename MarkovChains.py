@@ -13,19 +13,19 @@ class markov(object):
             else:
                 self.source(f.read())
         if self.__count == 0:
-            error('source not loaded')
+            raise Exception('source not loaded')
     
     def source(self,items):
         self.__list = items
         self.__count = len(self.__list)
         if self.__count == 0:
-            error('source is empty')
+            raise Exception('source is empty')
     
     def genChain(self,length,seedLen=1):
         if self.__count == 0:
-            error('source not loaded')
+            raise Exception('source not loaded')
         if self.__count < seedLen:
-            error('too few items in source list')
+            raise Exception('too few items in source list')
         seedIndex = random.randint(0,self.__count - (seedLen+1))
         
         seed = self.__list[seedIndex:seedIndex+seedLen]
